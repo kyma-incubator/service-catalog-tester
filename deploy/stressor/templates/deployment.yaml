@@ -1,0 +1,63 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "stressor.fullname" . }}
+  labels:
+    app: {{ template "stressor.name" . }}
+    chart: {{ template "stressor.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "stressor.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "stressor.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "stressor.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          readinessProbe:
+            httpGet:
+              path: /statusz
+              port: 8080
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          livenessProbe:
+            httpGet:
+              path: /statusz
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+          env:
+          - name: APP_PORT
+            value: "8080"
+          - name: APP_SLACK_CLIENT_CHANNEL_ID
+            value: "{{ .Values.slackClient.channelId }}"
+          - name: APP_SLACK_CLIENT_WEBHOOK_URL
+            value: "{{ .Values.slackClient.webhookUrl }}"
+          - name: APP_SLACK_CLIENT_TOKEN
+            value: "{{ .Values.slackClient.token }}"
+          - name: APP_OBSERVABLE_NAMESPACE
+            value: "{{ .Values.observable.namespace }}"
+          - name: APP_OBSERVABLE_DEPLOYMENTS_NAMES
+            value: "{{ .Values.observable.deploymentsNames }}"
+          - name: APP_CLUSTER_NAME
+            value: "{{ .Values.clusterName }}"

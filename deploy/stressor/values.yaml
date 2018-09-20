@@ -1,0 +1,16 @@
+replicaCount: 1
+image:
+  repository: eu.gcr.io/kyma-project/snapshot/service-catalog-tester
+  tag: 0.1.1
+  pullPolicy: Always
+
+slackClient:
+  webhookUrl: ""
+  channelId: "#kyma-stress-tests"
+  token: ""
+
+observable:
+  namespace: "tbd"
+  deploymentsNames: "core-catalog-apiserver,core-catalog-controller-manager"
+
+clusterName: "tbd"
