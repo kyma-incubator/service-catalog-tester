@@ -46,11 +46,13 @@ You can install the Service Catalog Tester on your cluster by installing the Hel
 ### Get more info about reported issues
 
 When the problem occur on cluster then notification is send to the Slack channel.
+
 Example:
 
 ![](./docs/assets/slack-notification.png)
 
-To get more information about the problem, you need to get logs from the Service Catalog Tester application and filter it by the notification *ID*.
+To get more information about the problem, you need to get logs from the Service Catalog Tester application and filter it by the notification **ID**.
+
 Example:
 ```
 kubectl logs -l app=stressor | grep '"ID":"6f496f67-c559-11e8-872a-000d3a457691"'
@@ -87,3 +89,20 @@ go test ./...
 ### Verify the code
 
 To check if the code is correct and you can push it, run the `before-commit.sh` script. It builds the application, runs tests, checks the status of the vendored libraries, runs the static code analysis, and ensures that the formatting of the code is correct.
+
+### Build a production version
+
+First you need to login into Google Container Registry
+```
+gcloud auth configure-docker
+```
+Then to build and push the Docker image, run this commands:
+
+```bash
+docker build service-catalog-tester:{image_tag}
+docker tag service-catalog-tester:{image_tag} eu.gcr.io/kyma-project/develop/service-catalog-tester:{image_tag}
+```
+
+The variables are:
+
+* `{image_tag}` - tag of the output image. To check the newest tag, go to: https://console.cloud.google.com/gcr/images/kyma-project/EU/develop/service-catalog-tester

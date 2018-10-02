@@ -2,7 +2,6 @@ package monitoring
 
 import (
 	"fmt"
-
 	"io/ioutil"
 
 	"github.com/pkg/errors"
@@ -71,7 +70,7 @@ func (s *WatcherService) Register(ref *v1.ObjectReference) error {
 }
 
 func (s *WatcherService) startWatching(ref *v1.ObjectReference, events <-chan watch.Event) {
-	// We will also get the restart events here, so watchEvent are not checking the status of the pod directly
+	// We will also get the restart events here, so we are not checking the status of the pod directly
 	for r := range events {
 		event := r.Object.(*v1.Event)
 		if event.Type != "Normal" {

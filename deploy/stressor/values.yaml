@@ -6,11 +6,11 @@ image:
 
 slackClient:
   webhookUrl: ""
-  channelId: "#kyma-stress-tests"
+  channelId: ""
   token: ""
 
 observable:
-  namespace: "tbd"
+  namespace: ""
   deploymentsNames: "core-catalog-apiserver,core-catalog-controller-manager"
 
-clusterName: "tbd"
+clusterName: ""
