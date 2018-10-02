@@ -1,0 +1,23 @@
+language: go
+
+# Only the last two Go releases are supported by the Go team with security
+# updates. Any older versions be considered deprecated. Don't bother testing
+# with them.
+go:
+- "1.10"
+
+# Only clone the most recent commit.
+git:
+  depth: 1
+
+# Skip the install step. Don't `go get` dependencies. Only build with the code
+# in vendor/
+install: true
+
+notifications:
+  email: false
+
+before_install:
+- curl https://raw.githubusercontent.com/golang/dep/v0.5.0/install.sh | sh
+
+script: ./before-commit.sh
