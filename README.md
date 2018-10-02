@@ -43,6 +43,19 @@ You can install the Service Catalog Tester on your cluster by installing the Hel
  --set clusterName={cluster_name}
 ```
 
+### Get more info about reported issues
+
+When the problem occur on cluster then notification is send to the Slack channel.
+Example:
+
+![](./docs/assets/slack-notification.png)
+
+To get more information about the problem, you need to get logs from the Service Catalog Tester application and filter it by the notification *ID*.
+Example:
+```
+kubectl logs -l app=stressor | grep '"ID":"6f496f67-c559-11e8-872a-000d3a457691"'
+```
+
 ## Development
 
 ### Add new test

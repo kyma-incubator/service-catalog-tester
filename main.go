@@ -10,9 +10,6 @@ import (
 	"github.com/kyma-incubator/service-catalog-tester/internal/notifier"
 	"github.com/kyma-incubator/service-catalog-tester/internal/platform/logger"
 	"github.com/kyma-incubator/service-catalog-tester/internal/platform/signal"
-	"github.com/kyma-incubator/service-catalog-tester/internal/runner"
-	"github.com/kyma-incubator/service-catalog-tester/internal/tests"
-
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
@@ -74,19 +71,20 @@ func main() {
 	monitor := monitoring.NewEventMonitor(k8sCli.AppsV1(), k8sInformersFactory.Core().V1().Pods(), watchSvc, observable, log)
 
 	// Test Runner
-	testRunner := runner.NewStressTestRunner(sNotifier, log)
-	E2EServiceCatalogHappyPath := tests.NewE2EServiceCatalogHappyPathTest(k8sConfig)
+	//testRunner := runner.NewStressTestRunner(sNotifier, log)
+	//E2EServiceCatalogHappyPath := tests.NewE2EServiceCatalogHappyPathTest(k8sConfig)
 
-	// Start informers
-	k8sInformersFactory.Start(stopCh)
-	// Wait for cache sync
-	k8sInformersFactory.WaitForCacheSync(stopCh)
 
 	// Start services
 	err = monitor.Start()
 	fatalOnError(err, "while starting resources monitoring")
 
-	go testRunner.Run(stopCh, cfg.Throttle, E2EServiceCatalogHappyPath)
+	//go testRunner.Run(stopCh, cfg.Throttle, E2EServiceCatalogHappyPath)
+
+	// Start informers
+	k8sInformersFactory.Start(stopCh)
+	// Wait for cache sync
+	k8sInformersFactory.WaitForCacheSync(stopCh)
 
 	runStatuszHTTPServer(stopCh, fmt.Sprintf(":%d", cfg.Port), log)
 }

@@ -25,8 +25,12 @@ type WatcherService struct {
 	slackNotifier SlackNotifier
 	log           logrus.FieldLogger
 
-	watchedObj  map[string]watch.Interface
-	notifiedObj map[types.UID]struct{}
+	watchedObj map[string]*watchObj
+}
+
+type watchObj struct {
+	watcher   watch.Interface
+	sendEvent map[types.UID]struct{}
 }
 
 // NewWatcherService returns new instance of the WatcherService
@@ -36,8 +40,7 @@ func NewWatcherService(eventCli corev1.CoreV1Interface, slackNotifier SlackNotif
 		slackNotifier: slackNotifier,
 		log:           log.WithField("service", "event:watcher"),
 
-		watchedObj:  make(map[string]watch.Interface),
-		notifiedObj: make(map[types.UID]struct{}),
+		watchedObj: make(map[string]*watchObj),
 	}
 }
 
@@ -59,7 +62,10 @@ func (s *WatcherService) Register(ref *v1.ObjectReference) error {
 	}
 
 	go s.startWatching(ref, eventWatcher.ResultChan())
-	s.watchedObj[ref.Name] = eventWatcher
+	s.watchedObj[ref.Name] = &watchObj{
+		watcher:   eventWatcher,
+		sendEvent: make(map[types.UID]struct{}),
+	}
 
 	return nil
 }
@@ -70,7 +76,8 @@ func (s *WatcherService) startWatching(ref *v1.ObjectReference, events <-chan wa
 		event := r.Object.(*v1.Event)
 		if event.Type != "Normal" {
 			failLogger := s.log.WithField("ID", event.GetUID())
-			if _, found := s.notifiedObj[event.UID]; found {
+			obj := s.watchedObj[ref.Name]
+			if _, found := obj.sendEvent[event.GetUID()]; found {
 				continue
 			}
 
@@ -78,7 +85,6 @@ func (s *WatcherService) startWatching(ref *v1.ObjectReference, events <-chan wa
 			dumpedLogs, err := s.podLogs(ref)
 			if err != nil {
 				failLogger.Errorf("Got error while getting log from pod: %v", err)
-				continue
 			}
 
 			failureReasonHeader := fmt.Sprintf("*[Phase: MONITORING]* _Discover that Pod %s has problems_", ref.Name)
@@ -87,7 +93,7 @@ func (s *WatcherService) startWatching(ref *v1.ObjectReference, events <-chan wa
 				failLogger.Errorf("Got error while sending notification to Slack: %v", err)
 				continue
 			} else {
-				s.notifiedObj[event.UID] = struct{}{}
+				obj.sendEvent[event.UID] = struct{}{}
 			}
 
 			failLogger.Infof(eventMsg)
@@ -116,12 +122,13 @@ func (s *WatcherService) podLogs(ref *v1.ObjectReference) (string, error) {
 
 // Unregister removes obj from watcher list and stop watching the events from it.
 func (s *WatcherService) Unregister(name string) error {
-	watcher, found := s.watchedObj[name]
+	obj, found := s.watchedObj[name]
 	if !found {
 		return fmt.Errorf("object with name %q was not registered", name)
 	}
 
-	watcher.Stop()
+	obj.watcher.Stop()
+	delete(s.watchedObj, name)
 
 	return nil
 }
