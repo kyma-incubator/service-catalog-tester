@@ -1,9 +1,7 @@
 package monitoring
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	typesCoreV1 "k8s.io/api/core/v1"
 	informersCoreV1 "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -43,8 +41,8 @@ func NewPodDetector(podInformer informersCoreV1.PodInformer, watcher EventWatchN
 		for _, labelGroup := range ob.PodLabelsGroups {
 			mapped[ob.Namespace] = append(mapped[ob.Namespace], labelGroup)
 		}
-		spew.Dump(mapped[ob.Namespace])
 	}
+
 	return &PodDetector{
 		watcher:     watcher,
 		podInformer: podInformer,
@@ -125,10 +123,24 @@ func (e *PodDetector) shouldActOn(pod *typesCoreV1.Pod) bool {
 	gotLabels := pod.DeepCopy().Labels
 	delete(gotLabels, "pod-template-hash") // it's additional label added by the k8s controller
 	for _, exp := range matchLabelsGroups {
-		if assert.ObjectsAreEqualValues(exp, gotLabels) {
+		if e.labelsAreEqual(exp, gotLabels) {
 			return true
 		}
 	}
 
 	return false
+}
+
+func (e *PodDetector) labelsAreEqual(exp Labels, got map[string]string) bool {
+	if len(got) != len(exp) {
+		return false
+	}
+
+	for k, v := range exp {
+		if got[k] != v {
+			return false
+		}
+	}
+
+	return true
 }
