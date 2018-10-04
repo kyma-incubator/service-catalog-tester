@@ -1,0 +1,16 @@
+replicaCount: 1
+image:
+  repository: eu.gcr.io/kyma-project/develop/service-catalog-tester
+  tag: 0.1.7
+  pullPolicy: IfNotPresent
+
+slackClient:
+  webhookUrl: ""
+  channelId: ""
+  token: ""
+
+observableDeployments:
+  namespace: ""
+  names: "core-catalog-apiserver,core-catalog-controller-manager"
+
+clusterName: ""
