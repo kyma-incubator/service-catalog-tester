@@ -29,14 +29,27 @@ const timeoutPerStep = time.Minute
 // - Creating ServiceInstance
 // - Create ServiceBininding
 // - and injecting those bindings to sample application
+//
+// Prerequisite:
+// - Helm-Broker is registered in Service Catalog
+// - and ClusterServiceClass `redis` is available with plan `micro`
+// - when TestOnlyServiceCatalog is set to false then BindingUsageController need to be installed
 type E2EServiceCatalogHappyPathTest struct {
-	k8sClientCfg *restclient.Config
+	k8sClientCfg           *restclient.Config
+	testOnlyServiceCatalog bool
+}
+
+// E2EServiceCatalogHappyPathTestConfig holds possible configuration for test
+type E2EServiceCatalogHappyPathTestConfig struct {
+	TestOnlyServiceCatalog bool          `envconfig:"default=false"`
+	TestThrottle           time.Duration `envconfig:"default=60s"`
 }
 
 // NewE2EServiceCatalogHappyPathTest returns new instance of E2EServiceCatalogHappyPathTest
-func NewE2EServiceCatalogHappyPathTest(k8sClientCfg *restclient.Config) *E2EServiceCatalogHappyPathTest {
+func NewE2EServiceCatalogHappyPathTest(cfg E2EServiceCatalogHappyPathTestConfig, k8sClientCfg *restclient.Config) *E2EServiceCatalogHappyPathTest {
 	return &E2EServiceCatalogHappyPathTest{
-		k8sClientCfg: k8sClientCfg,
+		k8sClientCfg:           k8sClientCfg,
+		testOnlyServiceCatalog: cfg.TestOnlyServiceCatalog,
 	}
 }
 
@@ -62,8 +75,11 @@ func (t *E2EServiceCatalogHappyPathTest) Execute(stop <-chan struct{}) (retErr e
 	steps := []func(timeout time.Duration) error{
 		ts.createAndWaitForRedisInstance,
 		ts.createAndWaitForRedisServiceBinding,
-		ts.createTesterDeploymentAndService,
-		ts.createBindingUsageForTesterDeployment,
+	}
+	if !t.testOnlyServiceCatalog {
+		steps = append(steps,
+			ts.createTesterDeploymentAndService,
+			ts.createBindingUsageForTesterDeployment)
 	}
 
 	for _, step := range steps {
@@ -72,9 +88,11 @@ func (t *E2EServiceCatalogHappyPathTest) Execute(stop <-chan struct{}) (retErr e
 		}
 	}
 
-	// verification
-	if err := ts.assertInjectedEnvVariable("PORT", "6379", 2*timeoutPerStep); err != nil {
-		return errors.Wrap(err, "while checking that envs are injected")
+	if !t.testOnlyServiceCatalog {
+		// verification
+		if err := ts.assertInjectedEnvVariable("PORT", "6379", 2*timeoutPerStep); err != nil {
+			return errors.Wrap(err, "while checking that envs are injected")
+		}
 	}
 
 	return nil
@@ -425,7 +443,10 @@ func (t *E2EServiceCatalogHappyPathTest) appendErr(err error, errToAppend ...err
 	if len(msg) == 0 {
 		return err
 	}
-	msg = append(msg, err.Error())
+
+	if err != nil {
+		msg = append(msg, err.Error())
+	}
 
 	return errors.New(strings.Join(msg, ";"))
 }

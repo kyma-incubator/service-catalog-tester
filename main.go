@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kyma-incubator/service-catalog-tester/internal/collector"
 	"github.com/kyma-incubator/service-catalog-tester/internal/monitoring"
 	"github.com/kyma-incubator/service-catalog-tester/internal/notifier"
 	"github.com/kyma-incubator/service-catalog-tester/internal/platform/logger"
@@ -26,16 +27,13 @@ const informerResyncPeriod = 30 * time.Minute
 
 // Config holds application configuration
 type Config struct {
-	Logger         logger.Config
-	Port           int           `envconfig:"default=8080"`
-	KubeconfigPath string        `envconfig:"optional"`
-	Throttle       time.Duration `envconfig:"default=60s"`
-	SlackClient    notifier.SlackClientConfig
-	ClusterName    string
-	Observable     struct {
-		Namespace        string
-		DeploymentsNames []string
-	}
+	Logger                     logger.Config
+	Port                       int    `envconfig:"default=8080"`
+	KubeconfigPath             string `envconfig:"optional"`
+	SlackClient                notifier.SlackClientConfig
+	ClusterName                string
+	ObservableDeployments      collector.DeploymentConfig
+	E2EServiceCatalogHappyPath tests.E2EServiceCatalogHappyPathTestConfig
 }
 
 func main() {
@@ -54,7 +52,7 @@ func main() {
 	// k8s informers
 	k8sCli, err := k8sClientset.NewForConfig(k8sConfig)
 	fatalOnError(err, "while creating k8s clientset")
-	k8sInformersFactory := informers.NewSharedInformerFactoryWithOptions(k8sCli, informerResyncPeriod, informers.WithNamespace(cfg.Observable.Namespace))
+	k8sInformersFactory := informers.NewSharedInformerFactoryWithOptions(k8sCli, informerResyncPeriod)
 
 	// Slack Notifier
 	slackClient := notifier.NewSlackClient(cfg.SlackClient)
@@ -64,23 +62,21 @@ func main() {
 	sNotifier := notifier.New(cfg.ClusterName, slackClient, msgRenderer)
 
 	// Ecosystem Monitor
-	watchSvc := monitoring.NewWatcherService(k8sCli.CoreV1(), sNotifier, log)
-	observable := monitoring.Observable{
-		Namespace:        cfg.Observable.Namespace,
-		DeploymentsNames: cfg.Observable.DeploymentsNames,
-	}
+	observableDeploys, err := collector.CollectPodLabelsFromDeployments(k8sCli.AppsV1(), cfg.ObservableDeployments)
+	fatalOnError(err, "while collecting Pod labels from requested Deployments")
 
-	monitor := monitoring.NewEventMonitor(k8sCli.AppsV1(), k8sInformersFactory.Core().V1().Pods(), watchSvc, observable, log)
+	watchSvc := monitoring.NewWatcherService(k8sCli.CoreV1(), sNotifier, log)
+	monitor := monitoring.NewPodDetector(k8sInformersFactory.Core().V1().Pods(), watchSvc, log, observableDeploys)
 
 	// Test Runner
 	testRunner := runner.NewStressTestRunner(sNotifier, log)
-	E2EServiceCatalogHappyPath := tests.NewE2EServiceCatalogHappyPathTest(k8sConfig)
+	E2EServiceCatalogHappyPath := tests.NewE2EServiceCatalogHappyPathTest(cfg.E2EServiceCatalogHappyPath, k8sConfig)
 
 	// Start services
 	err = monitor.Start()
 	fatalOnError(err, "while starting resources monitoring")
 
-	go testRunner.Run(stopCh, cfg.Throttle, E2EServiceCatalogHappyPath)
+	go testRunner.Run(stopCh, cfg.E2EServiceCatalogHappyPath.TestThrottle, E2EServiceCatalogHappyPath)
 
 	// Start informers
 	k8sInformersFactory.Start(stopCh)

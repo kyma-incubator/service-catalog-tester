@@ -55,9 +55,9 @@ spec:
             value: "{{ .Values.slackClient.webhookUrl }}"
           - name: APP_SLACK_CLIENT_TOKEN
             value: "{{ .Values.slackClient.token }}"
-          - name: APP_OBSERVABLE_NAMESPACE
-            value: "{{ .Values.observable.namespace }}"
+          - name: APP_OBSERVABLE_DEPLOYMENTS_NAMESPACE
+            value: "{{ .Values.observableDeployments.namespace }}"
           - name: APP_OBSERVABLE_DEPLOYMENTS_NAMES
-            value: "{{ .Values.observable.deploymentsNames }}"
+            value: "{{ .Values.observableDeployments.names }}"
           - name: APP_CLUSTER_NAME
             value: "{{ .Values.clusterName }}"

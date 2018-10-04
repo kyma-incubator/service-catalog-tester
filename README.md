@@ -39,7 +39,7 @@ You can install the Service Catalog Tester on your cluster by installing the Hel
  --set slackClient.webhookUrl={url} \
  --set slackClient.channelId={channel_id} \
  --set slackClient.token={token} \
- --set observable.namespace={namespace} \
+ --set observableDeployments.namespace={namespace} \
  --set clusterName={cluster_name}
 ```
 

@@ -50,17 +50,17 @@ type RenderSlackMessageInput struct {
 func (s *MessageRenderer) RenderSlackMessage(in RenderSlackMessageInput) (string, string, string, error) {
 	header := &bytes.Buffer{}
 	if err := s.headerReportTmpl.Execute(header, in); err != nil {
-		return "", "", "", errors.Wrapf(err, "while executing header template")
+		return "", "", "", errors.Wrap(err, "while executing header template")
 	}
 
 	body := &bytes.Buffer{}
 	if err := s.bodyReportTmpl.Execute(body, in); err != nil {
-		return "", "", "", errors.Wrapf(err, "while executing body template")
+		return "", "", "", errors.Wrap(err, "while executing body template")
 	}
 
 	footer := &bytes.Buffer{}
 	if err := s.footerReportTmpl.Execute(footer, in); err != nil {
-		return "", "", "", errors.Wrapf(err, "while executing footer template")
+		return "", "", "", errors.Wrap(err, "while executing footer template")
 	}
 
 	return header.String(), body.String(), footer.String(), nil

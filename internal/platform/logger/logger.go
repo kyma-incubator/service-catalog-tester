@@ -18,7 +18,7 @@ const (
 )
 
 // reservedFields defines all fields keys which cannot be used when
-// we logging additional fields with YaaS formatter
+// we logging additional fields
 var reservedFields = map[string]struct{}{
 	"hop":         {},
 	"requestId":   {},
@@ -31,7 +31,7 @@ var reservedFields = map[string]struct{}{
 // Formatter is a log formatter
 type Formatter struct{}
 
-// Format formats log entry to adhere to YaaS specs
+// Format formats log entry
 func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data := make(logrus.Fields, len(entry.Data)+3)
 
