@@ -48,7 +48,9 @@ spec:
             successThreshold: 1
           env:
           - name: APP_PORT
-            value: "8080"
+            value: "{{ .Values.app.port }}"
+          - name: APP_LOGGER_LEVEL
+            value: "{{ .Values.app.loggingLevel }}"
           - name: APP_SLACK_CLIENT_CHANNEL_ID
             value: "{{ .Values.slackClient.channelId }}"
           - name: APP_SLACK_CLIENT_WEBHOOK_URL
@@ -61,3 +63,7 @@ spec:
             value: "{{ .Values.observableDeployments.names }}"
           - name: APP_CLUSTER_NAME
             value: "{{ .Values.clusterName }}"
+          - name: APP_E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_THROTTLE
+            value: "{{ .Values.e2eServiceCatalogHappyPath.testThrottle }}"
+          - name: APP_E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_ONLY_SERVICE_CATALOG
+            value: "{{ .Values.e2eServiceCatalogHappyPath.testOnlyServiceCatalog }}"
