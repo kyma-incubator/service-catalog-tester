@@ -26,11 +26,11 @@ Use the following environment variables to configure the application:
 | **APP_SLACK_CLIENT_CHANNEL_ID** | Yes |  | The Slack channel where notification are posted. |
 | **APP_SLACK_CLIENT_WEBHOOK_URL** | Yes |  | The Slack Webhook URL. |
 | **APP_SLACK_CLIENT_TOKEN** | Yes |  | The Slack token used as the key to messages on Slack channel. |
-| **APP_OBSERVABLE_NAMESPACE** | Yes |  | The name of the Namespace where observed Deployments are installed. |
+| **APP_OBSERVABLE_DEPLOYMENTS_NAMESPACE** | Yes |  | The name of the Namespace where observed Deployments are installed. |
 | **APP_OBSERVABLE_DEPLOYMENTS_NAMES** | Yes |  | The names of Deployments you want to observe. Multiple Deployments names should be separated by comma. |
 | **APP_CLUSTER_NAME** | Yes |  | The name of the Kubernetes cluster where the tests are executed. |
-| **E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_ONLY_SERVICE_CATALOG** | No | false | If set to `false`, the testing scenario also covers injecting ServiceBinding Secrets to the sample application. |
-| **E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_THROTTLE** | No | 60s | Defines the time after which the next test is executed. |
+| **APP_E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_ONLY_SERVICE_CATALOG** | No | false | If set to `false`, the testing scenario also covers injecting ServiceBinding Secrets to the sample application. |
+| **APP_E2E_SERVICE_CATALOG_HAPPY_PATH_TEST_THROTTLE** | No | 60s | Defines the time after which the next test is executed. |
 
 ### Install on the cluster
 
@@ -42,6 +42,7 @@ You can install the Service Catalog Tester on your cluster by installing the Hel
  --set slackClient.channelId={channel_id} \
  --set slackClient.token={token} \
  --set observableDeployments.namespace={namespace} \
+ --set e2eServiceCatalogHappyPath.testThrottle={namespace} \
  --set clusterName={cluster_name}
 ```
 

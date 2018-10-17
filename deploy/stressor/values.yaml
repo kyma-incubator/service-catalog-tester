@@ -4,6 +4,10 @@ image:
   tag: 0.1.7
   pullPolicy: IfNotPresent
 
+app:
+  port: "8080"
+  loggingLevel: "info"
+
 slackClient:
   webhookUrl: ""
   channelId: ""
@@ -12,5 +16,9 @@ slackClient:
 observableDeployments:
   namespace: ""
   names: "core-catalog-apiserver,core-catalog-controller-manager"
+
+e2eServiceCatalogHappyPath:
+  testThrottle: "60s"
+  testOnlyServiceCatalog: "false"
 
 clusterName: ""
