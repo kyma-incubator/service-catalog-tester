@@ -1,7 +1,7 @@
-APP_NAME = service-catalog-tester
-IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
-TAG = $(DOCKER_TAG)
-binary=$(APP_NAME)
+APP_NAME=service-catalog-tester
+IMG=$(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
+TAG=$(DOCKER_TAG)
+BINARY=$(APP_NAME)
 
 .PHONY: build
 build:
@@ -27,4 +27,4 @@ ci-release: build build-image push-image
 
 .PHONY: clean
 clean:
-	rm -f $(binary)
+	rm -f $(BINARY)
