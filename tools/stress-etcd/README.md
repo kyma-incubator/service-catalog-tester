@@ -1,5 +1,7 @@
 # Stress-etcd
 
+## Overview
+
 Stress-etcd is a tool that populates keys in the etcd database. You can use it
 to evaluate the performance of an etcd cluster.
 
