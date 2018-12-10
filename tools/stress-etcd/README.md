@@ -9,35 +9,28 @@ to test the older version, modify the content of the `get-ssl-files.sh` script a
 
 ## Usage
 
-### Quick version
 Follow these steps to run the test:
-1. Establish a connection to the etcd cluster.
-2. Download certificates using the `get-ssl-files.sh` script.
-3. Run the `run-test.sh` script.
+1. Run the `build.sh` script to create a new Docker image named `stress-etcd`.
 
-### Full version
+2. Establish a connection to the etcd cluster.
+   
+   To connect to the etcd instance running on Kubernetes cluster, forward a port from 
+   one of the etcd instances. Run this command to open the `2379` port on localhost:    
+   ```bash
+   kubectl -n kyma-system port-forward service-catalog-etcd-stateful-0 2379:2379
+   ```
+3. Download certificates using the `get-ssl-files.sh` script.
 
-To test performance of an etcd cluster you first need to establish a connection.
-To connect to the etcd instance running on Kubernetes cluster, forward a port from 
-one of the etcd instances. 
+   It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
 
-Run this command to open the `2379` port on localhost: 
+4. Run `run-test.sh` to trigger the test with default settings. 
+   
+   It spawns the container, mounts the `ssl` directory, and provides the following parameters:
+   * **ETCD_SERVER**, which is the address of the server (default: `host.docker.internal:2379`).
+   * **KEY_COUNT**, which is the number of keys to populate (default: `100`).
+   * **KEY_SIZE**, which is the size of each key in bytes (default: `1000`).
 
-```bash
-kubectl -n kyma-system port-forward service-catalog-etcd-stateful-0 2379:2379
-```
-
-To download certificates from the etcd instance, run the `get-ssl-files.sh` script.
-It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
-etcd-client.crt, etcd-client.key, etcd-client-ca.crt. 
-
-Run `run-test.sh` to trigger the test with default settings. 
-It spawns the container, mounts the `ssl` directory, and provides the following parameters:
-* **ETCD_SERVER**, which is the address of the server (default: `host.docker.internal:2379`).
-* **KEY_COUNT**, which is the number of keys to populate (default: `100`).
-* **KEY_SIZE**, which is the size of each key in bytes (default: `1000`).
-
-## Examples
+### Examples
 
 The following information appears when you run the test:
 
@@ -68,7 +61,4 @@ The graphs show the load on the cluster in the following configuration:
 - 3 etcd nodes, ram=512MB, snapshot-count=10000
 - 2 stress-etcd workers, key_size=2000
 
-## Building
-
-Run the `build.sh` script to create a new Docker image named `stress-etcd`.
 
