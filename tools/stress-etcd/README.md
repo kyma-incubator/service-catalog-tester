@@ -4,7 +4,7 @@ Stress-etcd is a tool that populates keys in the etcd database. You can use it
 to evaluate the performance of an etcd cluster.
 
 >**NOTE:** Naming convention of the etcd cluster changed in Kyma version 0.5.0.
-Pods name changed from "core-catalog-etcd-stateful-X" to "service-catalog-etcd-stateful-X". If you need
+Pods name changed from `core-catalog-etcd-stateful-X` to `service-catalog-etcd-stateful-X`. If you need
 to test the older version, modify the content of the `get-ssl-files.sh` script and the port-forward command.
 
 ## Usage
@@ -58,7 +58,7 @@ spin up several instances of the `run-test.sh` script.
 When running the test, you can observe the load on the etcd cluster:
 ![](docs/assets/example-test-results.png)
 The graphs show the load on the cluster in the following configuration:
-- 3 etcd nodes, ram=512MB, snapshot-count=10000
-- 2 stress-etcd workers, key_size=2000
+- three etcd Nodes, ram=512MB, snapshot-count=10000
+- two stress-etcd workers, key_size=2000
 
 
