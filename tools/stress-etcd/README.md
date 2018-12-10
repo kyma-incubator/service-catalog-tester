@@ -19,13 +19,9 @@ Follow these steps to run the test:
    ```bash
    kubectl -n kyma-system port-forward service-catalog-etcd-stateful-0 2379:2379
    ```
-3. Download certificates using the `get-ssl-files.sh` script.
+3. Download certificates using the `get-ssl-files.sh` script. It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
 
-   It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
-
-4. Run `run-test.sh` to trigger the test with default settings. 
-   
-   It spawns the container, mounts the `ssl` directory, and provides the following parameters:
+4. Run `run-test.sh` to trigger the test with default settings. It spawns the container, mounts the `ssl` directory, and provides the following parameters:
    * **ETCD_SERVER**, which is the address of the server (default: `host.docker.internal:2379`).
    * **KEY_COUNT**, which is the number of keys to populate (default: `100`).
    * **KEY_SIZE**, which is the size of each key in bytes (default: `1000`).
@@ -56,7 +52,9 @@ If you want to test multiple workers at the same time,
 spin up several instances of the `run-test.sh` script.
 
 When running the test, you can observe the load on the etcd cluster:
+
 ![](docs/assets/example-test-results.png)
+
 The graphs show the load on the cluster in the following configuration:
 - three etcd Nodes, ram=512MB, snapshot-count=10000
 - two stress-etcd workers, key_size=2000
