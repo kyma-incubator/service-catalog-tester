@@ -6,15 +6,14 @@ echo "ETCD version:"
 curl --insecure \
     --fail \
     --silent \
+    --show-error \
     -L \
     --cacert /ssl/etcd-client-ca.crt \
     --key /ssl/etcd-client.key \
     --cert /ssl/etcd-client.crt \
     "https://${ETCD_SERVER}/version"
-echo
-sleep 2
 
-echo "Starting test"
+echo "\nStarting test"
 
 etcd_server="${ETCD_SERVER:-host.docker.internal:2379}"
 keys=${KEY_COUNT:-100}

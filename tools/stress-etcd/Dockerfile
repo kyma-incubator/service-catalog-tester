@@ -5,6 +5,6 @@ RUN apk add --no-cache \
     bash \
     coreutils
 
-ADD assets/ /bin/
+ADD stress.sh /bin/
 
 CMD ["/bin/stress.sh"]

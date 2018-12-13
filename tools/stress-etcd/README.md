@@ -7,12 +7,24 @@ to evaluate the performance of an etcd cluster.
 
 >**NOTE:** Naming convention of the etcd cluster changed in Kyma version 0.5.0.
 Pods name changed from `core-catalog-etcd-stateful-X` to `service-catalog-etcd-stateful-X`. If you need
-to test the older version, modify the content of the `get-ssl-files.sh` script and the port-forward command.
+to test the older version, modify the content of the `cmd/get-ssl-files.sh` script and the port-forward command.
+
+## Prerequisites
+
+* The latest version of [Docker](https://www.docker.com/)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version corresponding to the version of your Kubernetes cluster
+
+>**NOTE:** 
+In the `cmd/run-test.sh` script, the server name is set to `host.docker.internal`. This value is supported only on Docker for Mac.
+To use it on other platforms you must [customize](https://github.com/docker/for-linux/issues/264) it.
 
 ## Usage
 
 Follow these steps to run the test:
-1. Run the `build.sh` script to create a new Docker image named `stress-etcd`.
+1. Build the the Docker image by running this command:
+   ```bash
+   docker build -t stress-etcd .
+   ```
 
 2. Establish a connection to the etcd cluster.
    
@@ -21,9 +33,9 @@ Follow these steps to run the test:
    ```bash
    kubectl -n kyma-system port-forward service-catalog-etcd-stateful-0 2379:2379
    ```
-3. Download certificates using the `get-ssl-files.sh` script. It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
+3. Download certificates using the `cmd/get-ssl-files.sh` script. It creates the `ssl` subdirectory that contains `etcd-client.crt`, `etcd-client.key`, and `etcd-client-ca.crt` files. 
 
-4. Run `run-test.sh` to trigger the test with default settings. It spawns the container, mounts the `ssl` directory, and provides the following parameters:
+4. Run `cmd/run-test.sh` to trigger the test with default settings. It spawns the container, mounts the `ssl` directory, and provides the following parameters:
    * **ETCD_SERVER**, which is the address of the server (default: `host.docker.internal:2379`).
    * **KEY_COUNT**, which is the number of keys to populate (default: `100`).
    * **KEY_SIZE**, which is the size of each key in bytes (default: `1000`).
@@ -33,7 +45,7 @@ Follow these steps to run the test:
 The following information appears when you run the test:
 
 ```bash
-$ ./run-test.sh
+$ cmd/run-test.sh
 ETCD version:
 {"etcdserver":"3.3.9","etcdcluster":"3.3.0"}
 Starting test
@@ -51,7 +63,7 @@ sys	0m0.017s
 ``` 
 
 If you want to test multiple workers at the same time, 
-spin up several instances of the `run-test.sh` script.
+run the `run-test.sh` script in multiple shells.
 
 When running the test, you can observe the load on the etcd cluster:
 
