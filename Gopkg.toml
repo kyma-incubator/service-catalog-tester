@@ -8,7 +8,7 @@ required = [
   version = "0.1.32"
 
 [[constraint]]
-  branch = "master"
+  revision = "32fcb1868eee495544cec1555c02aa7c9ef55246"
   name = "github.com/kyma-project/kyma"
 
 [[constraint]]
