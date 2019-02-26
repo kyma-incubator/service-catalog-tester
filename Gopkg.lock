@@ -125,6 +125,7 @@
     "components/binding-usage-controller/pkg/client/clientset/versioned/typed/settings/v1alpha1"
   ]
   revision = "32fcb1868eee495544cec1555c02aa7c9ef55246"
+  version = "0.7.0"
 
 [[projects]]
   name = "github.com/modern-go/concurrent"
@@ -480,6 +481,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3d96a879247c26f331a2ab3e116ab5b9456d21fee6e00c31b09021def97c3325"
+  inputs-digest = "71091e783d68bc73acd030af3b2f38b1765f1604b90d156a87f36a4a75909801"
   solver-name = "gps-cdcl"
   solver-version = 1

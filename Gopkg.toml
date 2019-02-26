@@ -8,8 +8,8 @@ required = [
   version = "0.1.32"
 
 [[constraint]]
-  revision = "32fcb1868eee495544cec1555c02aa7c9ef55246"
   name = "github.com/kyma-project/kyma"
+  version = "0.7.0"
 
 [[constraint]]
   name = "github.com/pkg/errors"
