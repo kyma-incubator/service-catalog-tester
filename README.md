@@ -41,8 +41,9 @@ You can install the Service Catalog Tester on your cluster by installing the Hel
  --set slackClient.webhookUrl={url} \
  --set slackClient.channelId={channel_id} \
  --set slackClient.token={token} \
- --set observableDeployments.namespace={namespace} \
- --set e2eServiceCatalogHappyPath.testThrottle={namespace} \
+ --set observableDeployments.namespace='kyma-system' \
+ --set observableDeployments.names='service-catalog-apiserver\,service-catalog-controller-manager' \
+ --set e2eServiceCatalogHappyPath.testThrottle=1 \
  --set clusterName={cluster_name}
 ```
 

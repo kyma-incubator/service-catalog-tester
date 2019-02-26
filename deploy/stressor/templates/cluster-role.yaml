@@ -11,7 +11,7 @@ rules:
 - apiGroups: ["servicecatalog.k8s.io"]
   resources: ["serviceinstances", "servicebindings"]
   verbs: ["get", "delete", "create"]
-- apiGroups: ["servicecatalog.kyma.cx"]
+- apiGroups: ["servicecatalog.kyma-project.io"]
   resources: ["servicebindingusages"]
   verbs: ["get", "delete", "create"]
 - apiGroups: ["apps"]

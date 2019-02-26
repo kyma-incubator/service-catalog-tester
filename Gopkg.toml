@@ -8,8 +8,8 @@ required = [
   version = "0.1.32"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/kyma-project/kyma"
+  version = "0.7.0"
 
 [[constraint]]
   name = "github.com/pkg/errors"
