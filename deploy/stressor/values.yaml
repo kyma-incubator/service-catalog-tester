@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
-  repository: eu.gcr.io/kyma-project/develop/service-catalog-tester
-  tag: 0.1.7
+  repository: eu.gcr.io/kyma-project/incubator/develop/service-catalog-tester
+  tag: 3c2be629
   pullPolicy: IfNotPresent
 
 app:
