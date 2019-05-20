@@ -1,0 +1,66 @@
+{
+    "url": "http://localhost:8080",
+    "apiVersion" : "2.13",
+    "user": "username",
+    "password": "password",
+    "authentication": "basic",
+    "pollingInterval": 5,
+    "maxPollingNum": 60,
+    "cases": [
+        {
+            "name": "Mock Service Test",
+            "service_id" :"a2257daa-0e26-4c61-a68d-8a7453c1b767",
+            "organization_guid": "org-guid-here",
+            "space_guid": "space-guid-here",
+            "lifecycle": [
+                {
+                    "operation": "provision",
+                    "plan_id": "a6078798-70a1-4674-af94-ab9664d36a54",
+                    "async": true,
+                    "parameters": {
+                        "billing-account": "fake-account"
+                    }
+                },
+                {
+                    "operation": "update",
+                    "plan_id": "a6078798-70a1-4674-af94-ab9664d36a54",
+                    "async": true,
+                    "parameters": {
+                        "parameter1":1,
+                        "parameter2":"foo"
+                    }
+                },
+                {
+                    "operation": "bind",
+                    "parameters": {
+                        "redis-password": "dupa",
+                        "parameter2-name-here": "parameter2-value-here"
+                    }
+                },
+                {
+                    "operation": "unbind"
+                },
+                {
+                    "operation": "deprovision",
+                    "async": true
+                }
+            ]
+        }
+    ],
+    "conflictiveProvision": {
+        "service_id" :"a2257daa-0e26-4c61-a68d-8a7453c1b767",
+        "plan_id": "a6078798-70a1-4674-af94-ab9664d36a54",
+        "async": true,
+        "parameters": {
+            "billing-account": "dupacount"
+        }
+    },
+    "conflictiveBind": {
+        "service_id" :"a2257daa-0e26-4c61-a68d-8a7453c1b767",
+        "plan_id": "a6078798-70a1-4674-af94-ab9664d36a54",
+        "parameters": {
+            "parameter1-name-here": 1,
+            "parameter2-name-here": "parameter2-value-herexd"
+        }
+    }
+}
