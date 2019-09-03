@@ -1,0 +1,20 @@
+filters:
+  ".*":
+    approvers:
+      - PK85
+      - mszostok
+      - piotrmiskiewicz
+      - polskikiel
+      - jasiu001
+      - adamwalach
+  "\\.md$|/docs/|^milv\.config\.yaml$"
+    approvers:
+      - kazydek
+      - klaudiagrz
+      - tomekpapiernik
+      - a-bszwarc
+      - mmitoraj
+      - majakurcius
+      - alexandra-simeonova
+    labels:
+      - area/documentation
