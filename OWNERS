@@ -1,5 +1,5 @@
 filters:
-  ".*":
+  '.*':
     approvers:
       - PK85
       - mszostok
@@ -7,7 +7,7 @@ filters:
       - polskikiel
       - jasiu001
       - adamwalach
-  "\\.md$|/docs/|^milv\.config\.yaml$"
+  '\.md$|/docs/|^milv\.config\.yaml$':
     approvers:
       - kazydek
       - klaudiagrz
