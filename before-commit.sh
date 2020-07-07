@@ -16,6 +16,7 @@ readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly INVERTED='\033[7m'
 readonly NC='\033[0m' # No Color
+export GO111MODULE=off
 
 echo -e "${INVERTED}"
 echo "USER: " + ${USER}
@@ -44,6 +45,14 @@ if [ "$1" == "$CI_FLAG" ]; then
 	buildEnv="env CGO_ENABLED=0"
 fi
 ${buildEnv} go build -o service-catalog-tester ./main.go
+goBuildResult=$?
+if [ ${goBuildResult} != 0 ]; then
+    echo -e "${RED}✗ go build ${binary} ${NC}\n $goBuildResult${NC}"
+    exit 1
+else echo -e "${GREEN}√ go build ${binary} ${NC}"
+fi
+
+${buildEnv} go build -o health-proxy ./cmd/healthcheck/main.go
 goBuildResult=$?
 if [ ${goBuildResult} != 0 ]; then
     echo -e "${RED}✗ go build ${binary} ${NC}\n $goBuildResult${NC}"
