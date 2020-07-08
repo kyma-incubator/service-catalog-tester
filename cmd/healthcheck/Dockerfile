@@ -5,8 +5,8 @@ WORKDIR ${BASE_APP_DIR}
 
 COPY . ${BASE_APP_DIR}/
 
-RUN go build -v -o main main.go
-RUN mkdir /app && mv ./main /app/main
+RUN go build -v -o health-proxy main.go
+RUN mkdir /app && mv ./health-proxy /app/health-proxy
 
 FROM alpine:3.12.0
 WORKDIR /app
@@ -15,4 +15,4 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 COPY --from=builder /app /app
 
-CMD ["/app/main"]
+CMD ["/app/health-proxy"]

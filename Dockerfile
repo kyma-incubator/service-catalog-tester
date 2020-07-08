@@ -1,4 +1,4 @@
-FROM golang:1.12-alpine as builder
+FROM golang:1.13.12-alpine3.12 as builder
 
 ENV BASE_APP_DIR /go/src/github.com/kyma-incubator/service-catalog-tester
 WORKDIR ${BASE_APP_DIR}
