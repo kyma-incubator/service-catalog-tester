@@ -37,30 +37,6 @@ else echo -e "${GREEN}√ dep ensure -v --vendor-only${NC}"
 fi
 
 ##
-# GO BUILD
-##
-buildEnv=""
-if [ "$1" == "$CI_FLAG" ]; then
-	# build binary statically
-	buildEnv="env CGO_ENABLED=0"
-fi
-${buildEnv} go build -o service-catalog-tester ./main.go
-goBuildResult=$?
-if [ ${goBuildResult} != 0 ]; then
-    echo -e "${RED}✗ go build ${binary} ${NC}\n $goBuildResult${NC}"
-    exit 1
-else echo -e "${GREEN}√ go build ${binary} ${NC}"
-fi
-
-${buildEnv} go build -o health-proxy ./cmd/healthcheck/main.go
-goBuildResult=$?
-if [ ${goBuildResult} != 0 ]; then
-    echo -e "${RED}✗ go build ${binary} ${NC}\n $goBuildResult${NC}"
-    exit 1
-else echo -e "${GREEN}√ go build ${binary} ${NC}"
-fi
-
-##
 # DEP STATUS
 ##
 echo "? dep status"
