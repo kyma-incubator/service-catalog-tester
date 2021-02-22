@@ -8,7 +8,7 @@ COPY . ${BASE_APP_DIR}/
 RUN go build -v -o health-proxy main.go
 RUN mkdir /app && mv ./health-proxy /app/health-proxy
 
-FROM alpine:3.12.0
+FROM alpine:3.13.2
 WORKDIR /app
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
